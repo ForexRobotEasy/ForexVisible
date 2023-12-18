@@ -1,0 +1,98 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                              ForexVisible.mq5   |
+//|                        Developed by Forex Robot Easy Team        |
+//|                        Visit us at forexroboteasy.com            |
+//+------------------------------------------------------------------+
+
+//+------------------------------------------------------------------+
+//|                     Global variables and constants               |
+//+------------------------------------------------------------------+
+// Define the signal terminal
+input int signalTerminal = 1;
+
+// Define the currency pairs to copy signals from
+input string currencyPair1 = 'EURUSD';
+input string currencyPair2 = 'GBPUSD';
+input string currencyPair3 = 'USDJPY';
+
+// Define the minimum profit percentage to close all transactions
+input double minimumProfitPercentage = 5.0;
+
+//+------------------------------------------------------------------+
+//|                     Expert initialization function               |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+   // Subscribe to the signal terminal
+   CopySignal(signalTerminal);
+   
+   return(INIT_SUCCEEDED);
+}
+
+//+------------------------------------------------------------------+
+//|                     Expert deinitialization function             |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+{
+   // Unsubscribe from the signal terminal
+   UnsubscribeSignal(signalTerminal);
+}
+
+//+------------------------------------------------------------------+
+//|                     Expert tick function                         |
+//+------------------------------------------------------------------+
+void OnTick()
+{
+   // Check if there are any open positions
+   if(PositionSelect()==SELECT_BY_POS)
+   {
+      // Calculate the profit percentage
+      double profitPercentage = (AccountBalance()-AccountEquity())/AccountBalance() * 100;
+
+      // Check if the profit percentage is greater than or equal to the minimum profit percentage
+      if(profitPercentage >= minimumProfitPercentage)
+      {
+         // Close all positions
+         CloseAllPositions();
+      }
+   }
+}
+
+//+------------------------------------------------------------------+
+//|                     Copy signal from the signal terminal          |
+//+------------------------------------------------------------------+
+void CopySignal(const int terminal)
+{
+   // Copy trading functions from the signal terminal to the current terminal
+   if(CopyRates(Symbol(), PERIOD_CURRENT, 0, 1, RatesArray) > 0)
+   {
+      // Place trades based on the signals received
+      PlaceTrades();
+   }
+}
+
+//+------------------------------------------------------------------+
+//|                     Unsubscribe from the signal terminal          |
+//+------------------------------------------------------------------+
+void UnsubscribeSignal(const int terminal)
+{
+   // Unsubscribe from the signal terminal
+   // Code for unsubscribing goes here
+}
+
+//+------------------------------------------------------------------+
+//|                     Place trades based on signals                 |
+//+------------------------------------------------------------------+
+void PlaceTrades()
+{
+   // Code for placing trades based on the signals received goes here
+}
+
+//+------------------------------------------------------------------+
+//|                     Close all positions                           |
+//+------------------------------------------------------------------+
+void CloseAllPositions()
+{
+   // Code for closing all positions goes here
+}
